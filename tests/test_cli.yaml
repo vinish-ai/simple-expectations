@@ -1,0 +1,24 @@
+name: "cli_test_suite"
+data_sources:
+  - name: "local_warehouse"
+    backend: "duckdb"
+    table_name: "users"
+    kwargs:
+      database: "my_test_data.db"
+expectations:
+  - type: "expect_column_to_exist"
+    kwargs:
+      column: "id"
+  - type: "expect_table_row_count_to_be_between"
+    kwargs:
+      min_value: 1
+      max_value: 10
+  - type: "expect_column_values_to_not_be_null"
+    kwargs:
+      column: "age"
+      mostly: 0.5
+  - type: "expect_column_values_to_be_in_set"
+    kwargs:
+      column: "status"
+      value_set: ["active", "inactive"]
+      mostly: 1.0

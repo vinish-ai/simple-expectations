@@ -1,0 +1,21 @@
+[project]
+name = "simple-expectations"
+version = "0.1.0"
+description = "A great-expectations inspired data validation library entirely powered by ibis."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ibis-framework",
+    "pydantic",
+    "PyYAML"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "duckdb"
+]
+
+[project.scripts]
+se = "simple_expectations.cli:main"
+simple-expectations = "simple_expectations.cli:main"

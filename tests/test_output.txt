@@ -1,0 +1,25 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.9, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\vinis\Downloads\simple-expectations\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\vinis\Downloads\simple-expectations
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_duckdb.py::test_duckdb_expectations FAILED                          [100%]
+
+================================== FAILURES ===================================
+__________________________ test_duckdb_expectations ___________________________
+C:\Users\vinis\Downloads\ibis-expectations\tests\test_duckdb.py:30: in test_duckdb_expectations
+    ???
+E   assert False
+E    +  where False = ExpectationSuiteValidationResult(suite_name='test_suite', success=False, results=[ExpectationValidationResult(expectation_type='expect_column_values_to_not_be_null', success=False, kwargs={'column': 'id'}, observed_value=None, exception_info={'error': "'IntegerColumn' object has no attribute 'not_null'"}), ExpectationValidationResult(expectation_type='expect_column_values_to_be_between', success=False, kwargs={'column': 'age', 'min_value': 0, 'max_value': 100}, observed_value=None, exception_info={'error': "'FloatingColumn' object has no attribute 'not_null'"}), ExpectationValidationResult(expectation_type='expect_column_to_exist', success=True, kwargs={'column': 'id'}, observed_value={'column_exists': True}, exception_info=None)], statistics={'evaluated_expectations': 3, 'successful_expectations': 1, 'unsuccessful_expectations': 2}).success
+============================== warnings summary ===============================
+tests/test_duckdb.py::test_duckdb_expectations
+tests/test_duckdb.py::test_duckdb_expectations
+  C:\Users\vinis\Downloads\simple-expectations\.venv\Lib\site-packages\ibis\backends\duckdb\__init__.py:332: DeprecationWarning: fetch_arrow_table() is deprecated, use to_arrow_table() instead.
+    meta = result.fetch_arrow_table()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED test_duckdb.py::test_duckdb_expectations - assert False
+======================== 1 failed, 2 warnings in 1.08s ========================
