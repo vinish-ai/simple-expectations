@@ -13,7 +13,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "duckdb"
+    "duckdb",
+    "polars",
+    "pyspark"
 ]
 
 [project.scripts]

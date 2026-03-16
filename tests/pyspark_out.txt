@@ -1,0 +1,57 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.9, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\vinis\Downloads\simple-expectations\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\vinis\Downloads\simple-expectations
+configfile: pyproject.toml
+collecting ... collected 3 items
+
+test_backends.py::test_backend_expectations[pandas] PASSED               [ 33%]
+test_backends.py::test_backend_expectations[polars] ERROR                [ 66%]
+test_backends.py::test_backend_expectations[pyspark] ERROR               [100%]
+
+=================================== ERRORS ====================================
+_____________ ERROR at setup of test_backend_expectations[polars] _____________
+test_backends.py:30: in table
+    context.add_data_source("test_db", backend="polars", dictionary={"users": df})
+..\src\simple_expectations\core\context.py:48: in add_data_source
+    con = con_module.connect(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\.venv\Lib\site-packages\ibis\__init__.py:110: in connect
+    return backend.connect(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\.venv\Lib\site-packages\ibis\backends\__init__.py:1052: in connect
+    new_backend.reconnect()
+..\.venv\Lib\site-packages\ibis\backends\__init__.py:1067: in reconnect
+    self.do_connect(*self._con_args, **self._con_kwargs)
+E   TypeError: Backend.do_connect() got an unexpected keyword argument 'dictionary'
+____________ ERROR at setup of test_backend_expectations[pyspark] _____________
+test_backends.py:33: in table
+    spark = SparkSession.builder.appName("test").getOrCreate()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\.venv\Lib\site-packages\pyspark\sql\session.py:557: in getOrCreate
+    sc = SparkContext.getOrCreate(sparkConf)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\.venv\Lib\site-packages\pyspark\core\context.py:542: in getOrCreate
+    SparkContext(conf=conf or SparkConf())
+..\.venv\Lib\site-packages\pyspark\core\context.py:206: in __init__
+    SparkContext._ensure_initialized(self, gateway=gateway, conf=conf)
+..\.venv\Lib\site-packages\pyspark\core\context.py:463: in _ensure_initialized
+    SparkContext._gateway = gateway or launch_gateway(conf)
+                                       ^^^^^^^^^^^^^^^^^^^^
+..\.venv\Lib\site-packages\pyspark\java_gateway.py:111: in launch_gateway
+    raise PySparkRuntimeError(
+E   pyspark.errors.exceptions.base.PySparkRuntimeError: [JAVA_GATEWAY_EXITED] Java gateway process exited before sending its port number.
+---------------------------- Captured stdout setup ----------------------------
+Java not found and JAVA_HOME environment variable is not set.
+Install Java and set JAVA_HOME to point to the Java installation directory.
+============================== warnings summary ===============================
+tests/test_backends.py::test_backend_expectations[pandas]
+tests/test_backends.py::test_backend_expectations[pandas]
+  C:\Users\vinis\Downloads\simple-expectations\.venv\Lib\site-packages\ibis\backends\duckdb\__init__.py:332: DeprecationWarning: fetch_arrow_table() is deprecated, use to_arrow_table() instead.
+    meta = result.fetch_arrow_table()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR test_backends.py::test_backend_expectations[polars] - TypeError: Backen...
+ERROR test_backends.py::test_backend_expectations[pyspark] - pyspark.errors.e...
+=================== 1 passed, 2 warnings, 2 errors in 2.15s ===================

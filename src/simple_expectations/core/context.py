@@ -33,7 +33,7 @@ class Context:
 
         # Ibis 9.0+ removed native pandas/polars backends. We transparently 
         # route these to an in-memory duckdb connection for better performance.
-        if backend in ("pandas", "polars"):
+        if backend in ("pandas"):
             con = ibis.duckdb.connect()
             if "dictionary" in kwargs:
                 for table_name, df_obj in kwargs["dictionary"].items():

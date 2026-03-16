@@ -3,3 +3,4 @@ Evaluating 4 expectations...
 ==================================================
 Validation Report: cli_test_suite
 ==================================================
+pytest test_backends.py::test_backend_expectations[pyspark] -v

@@ -1,23 +1,45 @@
 import pytest
 import simple_expectations as ie
-import tempfile
 import pandas as pd
 
-@pytest.fixture
-def table():
-    df = pd.DataFrame({
+@pytest.fixture(params=["pandas", "polars", "pyspark"])
+def table(request):
+    backend = request.param
+    
+    # Base dataset
+    data = {
         "id": [1, 2, 3, 4, 5], 
-        "age": [25, 30, 15, None, 99],
+        "age": [25.0, 30.0, 15.0, None, 99.0], # Use floats for null compatibility across engines
         "status": ["active", "inactive", "active", "pending", "active"],
         "email": ["test@example.com", "user@domain.org", "hello@world.net", "invalid", "valid@email.com"]
-    })
+    }
     
     context = ie.Context()
-    # User does not need to import ibis! Just specify backend="pandas"
-    context.add_data_source("test_db", backend="pandas", dictionary={"users": df})
+    
+    if backend == "pandas":
+        df = pd.DataFrame(data)
+        context.add_data_source("test_db", backend="pandas", dictionary={"users": df})
+    elif backend == "polars":
+        import polars as pl
+        import ibis
+        df = pl.DataFrame(data)
+        con = ibis.polars.connect()
+        con.create_table("users", df)
+        context.add_data_source("test_db", backend="polars", connection=con)
+    elif backend == "pyspark":
+        try:
+            from pyspark.sql import SparkSession
+            spark = SparkSession.builder.appName("test").getOrCreate()
+            df = pd.DataFrame(data)
+            spark_df = spark.createDataFrame(df)
+            spark_df.createOrReplaceTempView("users")
+            context.add_data_source("test_db", backend="pyspark")
+        except Exception as e:
+            pytest.skip(f"PySpark not available on system, skipping: {e}")
+            
     return context.get_table("test_db", "users")
 
-def test_duckdb_expectations(table):
+def test_backend_expectations(table):
     context = ie.Context()
     
     suite = ie.ExpectationSuite(

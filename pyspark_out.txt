@@ -1,0 +1,22 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\vinis\Downloads\simple-expectations\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\vinis\Downloads\simple-expectations
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+=================================== ERRORS ====================================
+___________________ ERROR collecting tests/test_backends.py ___________________
+ImportError while importing test module 'C:\Users\vinis\Downloads\simple-expectations\tests\test_backends.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_backends.py:2: in <module>
+    import simple_expectations as ie
+E   ModuleNotFoundError: No module named 'simple_expectations'
+=========================== short test summary info ===========================
+ERROR tests/test_backends.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+============================== 1 error in 0.13s ===============================
