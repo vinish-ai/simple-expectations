@@ -10,7 +10,7 @@ class TextReporter:
         print(f"Validation Report: {self.result.suite_name}")
         print("="*50)
         
-        status = "✅ PASS" if self.result.success else "❌ FAIL"
+        status = "PASS" if self.result.success else "FAIL"
         print(f"Overall Status: {status}")
         print(f"Success Ratio:  {self.result.statistics['successful_expectations']} / {self.result.statistics['evaluated_expectations']} Expectations")
         print("-"*50)
