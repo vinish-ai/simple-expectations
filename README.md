@@ -108,9 +108,23 @@ results = context.validate(table, suite)
 print(results.model_dump_json(indent=2))
 ```
 
-## Available MVP Expectations
-- `expect_column_to_exist(column)`
-- `expect_column_values_to_not_be_null(column, mostly=1.0)`
-- `expect_column_values_to_be_between(column, min_value, max_value, mostly=1.0)`
+## Available Expectations
+- **Table Structure:**
+  - `expect_table_row_count_to_be_between(min_value=None, max_value=None)`
+- **Column Structure:**
+  - `expect_column_to_exist(column)`
+  - `expect_column_values_to_be_unique(column)`
+- **Column Map (Row-level):**
+  - `expect_column_values_to_not_be_null(column, mostly=1.0)`
+  - `expect_column_values_to_be_between(column, min_value=None, max_value=None, mostly=1.0)`
+  - `expect_column_values_to_be_in_set(column, value_set, mostly=1.0)`
+  - `expect_column_values_to_not_be_in_set(column, value_set, mostly=1.0)`
+  - `expect_column_values_to_match_regex(column, regex, mostly=1.0)`
+  - `expect_column_value_lengths_to_be_between(column, min_value=None, max_value=None, mostly=1.0)`
+  - `expect_column_values_to_be_of_type(column, type_, mostly=1.0)`
+- **Column Aggregate:**
+  - `expect_column_max_to_be_between(column, min_value=None, max_value=None)`
+  - `expect_column_min_to_be_between(column, min_value=None, max_value=None)`
+  - `expect_column_mean_to_be_between(column, min_value=None, max_value=None)`
 
 *Powered by Ibis deferred expressions, new expectations can be quickly created via the `@register_expectation` decorator pattern.*

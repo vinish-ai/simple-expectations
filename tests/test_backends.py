@@ -54,15 +54,18 @@ def test_backend_expectations(table):
             # 4 out of 5 match (mostly=0.8)
             ie.BaseExpectation(type="expect_column_values_to_match_regex", kwargs={"column": "email", "regex": r"^[\w\.-]+@[\w\.-]+\.\w+$", "mostly": 0.8}),
             ie.BaseExpectation(type="expect_column_max_to_be_between", kwargs={"column": "age", "min_value": 50, "max_value": 100}),
-            ie.BaseExpectation(type="expect_column_min_to_be_between", kwargs={"column": "age", "min_value": 10, "max_value": 20})
+            ie.BaseExpectation(type="expect_column_min_to_be_between", kwargs={"column": "age", "min_value": 10, "max_value": 20}),
+            ie.BaseExpectation(type="expect_column_value_lengths_to_be_between", kwargs={"column": "status", "min_value": 6, "max_value": 10}),
+            ie.BaseExpectation(type="expect_column_values_to_be_of_type", kwargs={"column": "age", "type_": "float"}),
+            ie.BaseExpectation(type="expect_column_values_to_not_be_in_set", kwargs={"column": "status", "value_set": ["deleted", "banned"]})
         ]
     )
     
     results = context.validate(table, suite)
     
     assert results.success
-    assert results.statistics["evaluated_expectations"] == 9
-    assert results.statistics["successful_expectations"] == 9
+    assert results.statistics["evaluated_expectations"] == 12
+    assert results.statistics["successful_expectations"] == 12
     
     # Let's test failure
     suite.expectations.append(ie.BaseExpectation(type="expect_column_to_exist", kwargs={"column": "non_existent"}))
