@@ -213,3 +213,30 @@ def expect_column_values_to_not_be_in_set(table: ibis.expr.types.Table, column: 
         }
         
     return metrics, resolve
+
+@register_expectation("expect_column_values_to_be_null")
+def expect_column_values_to_be_null(table: ibis.expr.types.Table, column: str, mostly: float = 1.0, **kwargs):
+    col = table[column]
+    
+    metrics = {
+        "null_count": col.isnull().ifelse(1, 0).sum(),
+        "total_count": table.count()
+    }
+    
+    def resolve(resolved_metrics: dict):
+        null_count = resolved_metrics["null_count"]
+        total = resolved_metrics["total_count"]
+        
+        if total == 0:
+            return True, {"column": column, "mostly": mostly}, {"null_fraction": 0.0}
+            
+        actual_mostly = null_count / total
+        success = actual_mostly >= mostly
+        
+        return success, {"column": column, "mostly": mostly}, {
+            "actual_mostly": float(actual_mostly), 
+            "null_count": int(null_count), 
+            "total_count": int(total)
+        }
+        
+    return metrics, resolve

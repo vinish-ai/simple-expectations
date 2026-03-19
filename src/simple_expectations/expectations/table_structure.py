@@ -19,3 +19,20 @@ def expect_table_row_count_to_be_between(table: ibis.expr.types.Table, min_value
         return success, {"min_value": min_value, "max_value": max_value}, {"row_count": int(row_count)}
         
     return metrics, resolve
+
+@register_expectation("expect_table_columns_to_match_set")
+def expect_table_columns_to_match_set(table: ibis.expr.types.Table, column_set: list, exact_match: bool = True, **kwargs):
+    def resolve(_):
+        table_cols = set(table.columns)
+        expected_cols = set(column_set)
+        
+        if exact_match:
+            success = table_cols == expected_cols
+        else:
+            success = expected_cols.issubset(table_cols)
+            
+        return success, {"column_set": column_set, "exact_match": exact_match}, {
+            "observed_columns": list(table_cols)
+        }
+        
+    return {}, resolve
