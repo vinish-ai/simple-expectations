@@ -46,3 +46,38 @@ def test_resolve_expect_table_columns_to_match_set(dummy_table):
     metrics_sub, resolve_fn_sub = expect_table_columns_to_match_set(dummy_table, column_set=["id"], exact_match=False)
     success_sub, kwargs_sub, observed_sub = resolve_fn_sub({})
     assert success_sub is True
+
+from simple_expectations.expectations.column_aggregate import expect_column_stdev_to_be_between, expect_column_median_to_be_between
+from simple_expectations.expectations.column_pair_map import expect_column_pair_values_a_to_be_greater_than_b
+
+def test_resolve_expect_column_stdev_to_be_between(dummy_table):
+    metrics, resolve_fn = expect_column_stdev_to_be_between(dummy_table, "id", min_value=0.0, max_value=2.0)
+    success, _, obs = resolve_fn({"stdev_val": 1.5})
+    assert success is True
+    success_fail, _, _ = resolve_fn({"stdev_val": 2.5})
+    assert success_fail is False
+
+def test_resolve_expect_column_median_to_be_between(dummy_table):
+    metrics, resolve_fn = expect_column_median_to_be_between(dummy_table, "id", min_value=0.0, max_value=2.0)
+    success, _, _ = resolve_fn({"median_val": 1.5})
+    assert success is True
+    success_fail, _, _ = resolve_fn({"median_val": 2.5})
+    assert success_fail is False
+
+def test_resolve_expect_table_columns_to_match_ordered_list(dummy_table):
+    from simple_expectations.expectations.table_structure import expect_table_columns_to_match_ordered_list
+    metrics, resolve_fn = expect_table_columns_to_match_ordered_list(dummy_table, column_list=["id", "name"])
+    success, _, _ = resolve_fn({})
+    assert success is True
+    
+    metrics_fail, resolve_fn_fail = expect_table_columns_to_match_ordered_list(dummy_table, column_list=["name", "id"])
+    success_fail, _, _ = resolve_fn_fail({})
+    assert success_fail is False
+
+def test_resolve_expect_column_pair_values_a_to_be_greater_than_b(dummy_table):
+    metrics, resolve_fn = expect_column_pair_values_a_to_be_greater_than_b(dummy_table, "id", "id", or_equal=True)
+    success, _, _ = resolve_fn({"valid_count": 2, "non_null_count": 2})
+    assert success is True
+    
+    success_fail, _, _ = resolve_fn({"valid_count": 1, "non_null_count": 2})
+    assert success_fail is False

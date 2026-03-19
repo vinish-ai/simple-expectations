@@ -36,3 +36,11 @@ def expect_table_columns_to_match_set(table: ibis.expr.types.Table, column_set: 
         }
         
     return {}, resolve
+
+@register_expectation("expect_table_columns_to_match_ordered_list")
+def expect_table_columns_to_match_ordered_list(table: ibis.expr.types.Table, column_list: list, **kwargs):
+    def resolve(_):
+        table_cols = list(table.columns)
+        success = table_cols == column_list
+        return success, {"column_list": column_list}, {"observed_columns": table_cols}
+    return {}, resolve

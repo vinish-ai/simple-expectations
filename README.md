@@ -108,13 +108,26 @@ results = context.validate(table, suite)
 print(results.model_dump_json(indent=2))
 ```
 
+## CLI Interface
+You can quickly generate boilerplate validation suites and run them directly from the command line:
+```bash
+# Generate a starter my_validations.yaml and run_validations.py script
+simple-expectations init
+
+# Validate an existing suite YAML
+simple-expectations validate my_validations.yaml
+```
+
 ## Available Expectations
 - **Table Structure:**
   - `expect_table_row_count_to_be_between(min_value=None, max_value=None)`
+  - `expect_table_columns_to_match_set(column_set, exact_match=True)`
+  - `expect_table_columns_to_match_ordered_list(column_list)`
 - **Column Structure:**
   - `expect_column_to_exist(column)`
   - `expect_column_values_to_be_unique(column)`
 - **Column Map (Row-level):**
+  - `expect_column_values_to_be_null(column, mostly=1.0)`
   - `expect_column_values_to_not_be_null(column, mostly=1.0)`
   - `expect_column_values_to_be_between(column, min_value=None, max_value=None, mostly=1.0)`
   - `expect_column_values_to_be_in_set(column, value_set, mostly=1.0)`
@@ -122,9 +135,13 @@ print(results.model_dump_json(indent=2))
   - `expect_column_values_to_match_regex(column, regex, mostly=1.0)`
   - `expect_column_value_lengths_to_be_between(column, min_value=None, max_value=None, mostly=1.0)`
   - `expect_column_values_to_be_of_type(column, type_, mostly=1.0)`
+- **Column Pair Map (Row-level):**
+  - `expect_column_pair_values_a_to_be_greater_than_b(column_A, column_B, or_equal=False, mostly=1.0)`
 - **Column Aggregate:**
   - `expect_column_max_to_be_between(column, min_value=None, max_value=None)`
   - `expect_column_min_to_be_between(column, min_value=None, max_value=None)`
   - `expect_column_mean_to_be_between(column, min_value=None, max_value=None)`
+  - `expect_column_stdev_to_be_between(column, min_value=None, max_value=None)`
+  - `expect_column_median_to_be_between(column, min_value=None, max_value=None)`
 
 *Powered by Ibis deferred expressions, new expectations can be quickly created via the `@register_expectation` decorator pattern.*
