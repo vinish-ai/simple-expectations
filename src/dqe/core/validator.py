@@ -15,8 +15,9 @@ def register_expectation(name: str):
     return decorator
 
 class Validator:
-    def __init__(self, table: ibis.expr.types.Table):
+    def __init__(self, table: ibis.expr.types.Table, context=None):
         self.table = table
+        self.context = context
 
     def validate(self, suite: ExpectationSuite) -> ExpectationSuiteValidationResult:
         results: List[ExpectationValidationResult] = []
@@ -39,7 +40,9 @@ class Validator:
             eval_fn = _EXPECTATION_REGISTRY[exp.type]
             try:
                 # evaluate function now returns (metrics_dict, resolve_fn)
-                metrics, resolve_fn = eval_fn(self.table, **exp.kwargs)
+                kwargs = exp.kwargs.copy()
+                kwargs["context"] = self.context
+                metrics, resolve_fn = eval_fn(self.table, **kwargs)
                 
                 # Prefix metrics to prevent namespace collisions between expectations
                 prefixed_metrics = {

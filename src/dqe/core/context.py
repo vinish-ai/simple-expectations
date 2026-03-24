@@ -57,5 +57,5 @@ class Context:
 
     def validate(self, table: Any, suite: ExpectationSuite) -> ExpectationSuiteValidationResult:
         """Validate a table against an ExpectationSuite."""
-        validator = Validator(table=table)
+        validator = Validator(table=table, context=self)
         return validator.validate(suite)

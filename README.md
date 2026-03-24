@@ -140,6 +140,9 @@ dqe validate my_validations.yaml
   - `expect_column_values_to_be_of_type(column, type_, mostly=1.0)`
 - **Column Pair Map (Row-level):**
   - `expect_column_pair_values_a_to_be_greater_than_b(column_A, column_B, or_equal=False, mostly=1.0)`
+- **Cross-Table (Reconciliation):**
+  - `expect_column_values_to_exist_in_other_table(column, other_table_name, other_column, other_data_source=None, mostly=1.0)`
+  - `expect_table_row_count_to_equal_other_table(other_table_name, other_data_source=None)`
 - **Column Aggregate:**
   - `expect_column_max_to_be_between(column, min_value=None, max_value=None)`
   - `expect_column_min_to_be_between(column, min_value=None, max_value=None)`
