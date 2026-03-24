@@ -143,6 +143,8 @@ dqe validate my_validations.yaml
 - **Cross-Table (Reconciliation):**
   - `expect_column_values_to_exist_in_other_table(column, other_table_name, other_column, other_data_source=None, mostly=1.0)`
   - `expect_table_row_count_to_equal_other_table(other_table_name, other_data_source=None)`
+- **Custom Logic Expressions:**
+  - `expect_custom_condition(condition, compiler="ibis", mostly=1.0)`
 - **Column Aggregate:**
   - `expect_column_max_to_be_between(column, min_value=None, max_value=None)`
   - `expect_column_min_to_be_between(column, min_value=None, max_value=None)`
