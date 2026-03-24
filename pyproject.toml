@@ -17,6 +17,9 @@ dev = [
     "polars",
     "pyspark"
 ]
+airflow = ["apache-airflow"]
+dagster = ["dagster"]
+prefect = ["prefect"]
 
 [project.scripts]
 se = "dqe.cli:main"
