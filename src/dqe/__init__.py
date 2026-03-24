@@ -4,6 +4,7 @@ from dqe.core.validator import Validator
 from dqe.core.expectation import BaseExpectation
 from dqe.core.models import ExpectationValidationResult, ExpectationSuiteValidationResult
 from dqe.core.profiler import Profiler
+from dqe.core.exporter import DatabaseExporter, WebhookExporter
 
 import dqe.expectations
 
