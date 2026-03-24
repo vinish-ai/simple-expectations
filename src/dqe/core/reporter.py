@@ -1,4 +1,4 @@
-from simple_expectations.core.models import ExpectationSuiteValidationResult
+from dqe.core.models import ExpectationSuiteValidationResult
 import sys
 
 class TextReporter:

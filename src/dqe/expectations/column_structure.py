@@ -1,5 +1,5 @@
 import ibis
-from simple_expectations.core.validator import register_expectation
+from dqe.core.validator import register_expectation
 
 @register_expectation("expect_column_to_exist")
 def expect_column_to_exist(table: ibis.expr.types.Table, column: str, **kwargs):

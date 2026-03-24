@@ -1,9 +1,9 @@
 import ibis
 from typing import Any, Dict, Optional
 
-from simple_expectations.core.suite import ExpectationSuite
-from simple_expectations.core.models import ExpectationSuiteValidationResult
-from simple_expectations.core.validator import Validator
+from dqe.core.suite import ExpectationSuite
+from dqe.core.models import ExpectationSuiteValidationResult
+from dqe.core.validator import Validator
 
 class Context:
     def __init__(self):

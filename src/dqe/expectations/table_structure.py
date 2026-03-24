@@ -1,5 +1,5 @@
 import ibis
-from simple_expectations.core.validator import register_expectation
+from dqe.core.validator import register_expectation
 
 @register_expectation("expect_table_row_count_to_be_between")
 def expect_table_row_count_to_be_between(table: ibis.expr.types.Table, min_value: int = None, max_value: int = None, **kwargs):

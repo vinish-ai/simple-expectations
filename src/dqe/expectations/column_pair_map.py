@@ -1,5 +1,5 @@
 import ibis
-from simple_expectations.core.validator import register_expectation
+from dqe.core.validator import register_expectation
 
 @register_expectation("expect_column_pair_values_a_to_be_greater_than_b")
 def expect_column_pair_values_a_to_be_greater_than_b(table: ibis.expr.types.Table, column_A: str, column_B: str, or_equal: bool = False, mostly: float = 1.0, **kwargs):

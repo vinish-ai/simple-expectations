@@ -1,8 +1,8 @@
 import pytest
 import ibis
 import pandas as pd
-from simple_expectations.expectations.column_map import expect_column_values_to_be_null, expect_column_values_to_not_be_null
-from simple_expectations.expectations.table_structure import expect_table_columns_to_match_set
+from dqe.expectations.column_map import expect_column_values_to_be_null, expect_column_values_to_not_be_null
+from dqe.expectations.table_structure import expect_table_columns_to_match_set
 
 @pytest.fixture
 def dummy_table():
@@ -47,8 +47,8 @@ def test_resolve_expect_table_columns_to_match_set(dummy_table):
     success_sub, kwargs_sub, observed_sub = resolve_fn_sub({})
     assert success_sub is True
 
-from simple_expectations.expectations.column_aggregate import expect_column_stdev_to_be_between, expect_column_median_to_be_between
-from simple_expectations.expectations.column_pair_map import expect_column_pair_values_a_to_be_greater_than_b
+from dqe.expectations.column_aggregate import expect_column_stdev_to_be_between, expect_column_median_to_be_between
+from dqe.expectations.column_pair_map import expect_column_pair_values_a_to_be_greater_than_b
 
 def test_resolve_expect_column_stdev_to_be_between(dummy_table):
     metrics, resolve_fn = expect_column_stdev_to_be_between(dummy_table, "id", min_value=0.0, max_value=2.0)
@@ -65,7 +65,7 @@ def test_resolve_expect_column_median_to_be_between(dummy_table):
     assert success_fail is False
 
 def test_resolve_expect_table_columns_to_match_ordered_list(dummy_table):
-    from simple_expectations.expectations.table_structure import expect_table_columns_to_match_ordered_list
+    from dqe.expectations.table_structure import expect_table_columns_to_match_ordered_list
     metrics, resolve_fn = expect_table_columns_to_match_ordered_list(dummy_table, column_list=["id", "name"])
     success, _, _ = resolve_fn({})
     assert success is True

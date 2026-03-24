@@ -1,5 +1,5 @@
 [project]
-name = "simple-expectations"
+name = "dqe"
 version = "0.1.0"
 description = "A great-expectations inspired data validation library entirely powered by ibis."
 readme = "README.md"
@@ -19,5 +19,12 @@ dev = [
 ]
 
 [project.scripts]
-se = "simple_expectations.cli:main"
-simple-expectations = "simple_expectations.cli:main"
+se = "dqe.cli:main"
+dqe = "dqe.cli:main"
+
+[dependency-groups]
+dev = [
+    "pandas>=3.0.1",
+    "pyarrow>=23.0.1",
+    "pyarrow-hotfix>=0.7",
+]

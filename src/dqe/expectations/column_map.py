@@ -1,5 +1,5 @@
 import ibis
-from simple_expectations.core.validator import register_expectation
+from dqe.core.validator import register_expectation
 from typing import List
 
 @register_expectation("expect_column_values_to_not_be_null")

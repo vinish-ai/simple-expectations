@@ -2,9 +2,9 @@ import argparse
 import sys
 from pathlib import Path
 
-from simple_expectations.core.context import Context
-from simple_expectations.core.suite import ExpectationSuite
-from simple_expectations.core.reporter import TextReporter
+from dqe.core.context import Context
+from dqe.core.suite import ExpectationSuite
+from dqe.core.reporter import TextReporter
 
 def main():
     parser = argparse.ArgumentParser(description="Simple Expectations CLI Runner")
@@ -24,7 +24,7 @@ def main():
         
         script_path = Path("run_validations.py")
         if not script_path.exists():
-            py_content = """import simple_expectations as se\n\ncontext = se.Context()\nsuite = se.ExpectationSuite.from_yaml("my_validations.yaml")\ncontext.add_data_source_from_suite(suite)\n\n# Assuming you have a table 'my_table' in your DB:\n# table = context.get_table("my_duckdb", "my_table")\n# results = context.validate(table, suite)\n# print(f"Success: {results.success}")\n"""
+            py_content = """import dqe as se\n\ncontext = se.Context()\nsuite = se.ExpectationSuite.from_yaml("my_validations.yaml")\ncontext.add_data_source_from_suite(suite)\n\n# Assuming you have a table 'my_table' in your DB:\n# table = context.get_table("my_duckdb", "my_table")\n# results = context.validate(table, suite)\n# print(f"Success: {results.success}")\n"""
             script_path.write_text(py_content)
             
         print("Initialized Simple Expectations project.")

@@ -1,5 +1,5 @@
 import ibis
-from simple_expectations.core.validator import register_expectation
+from dqe.core.validator import register_expectation
 
 @register_expectation("expect_column_max_to_be_between")
 def expect_column_max_to_be_between(table: ibis.expr.types.Table, column: str, min_value: float = None, max_value: float = None, **kwargs):

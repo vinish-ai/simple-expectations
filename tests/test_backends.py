@@ -1,5 +1,5 @@
 import pytest
-import simple_expectations as ie
+import dqe as ie
 import pandas as pd
 
 @pytest.fixture(params=["pandas", "polars", "pyspark"])

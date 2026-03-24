@@ -1,9 +1,9 @@
 import ibis
 from typing import List, Dict, Callable
 
-from simple_expectations.core.suite import ExpectationSuite
-from simple_expectations.core.models import ExpectationSuiteValidationResult, ExpectationValidationResult
-from simple_expectations.core.expectation import BaseExpectation
+from dqe.core.suite import ExpectationSuite
+from dqe.core.models import ExpectationSuiteValidationResult, ExpectationValidationResult
+from dqe.core.expectation import BaseExpectation
 
 # A simple registry to hold evaluation functions for each expectation type
 _EXPECTATION_REGISTRY: Dict[str, Callable] = {}

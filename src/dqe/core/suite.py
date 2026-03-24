@@ -3,7 +3,7 @@ from typing import List, Optional, Dict, Any
 import yaml
 from pathlib import Path
 
-from simple_expectations.core.expectation import BaseExpectation
+from dqe.core.expectation import BaseExpectation
 
 class DataSourceProfile(BaseModel):
     name: str

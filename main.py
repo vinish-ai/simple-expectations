@@ -1,5 +1,5 @@
 def main():
-    print("Hello from simple-expectations!")
+    print("Hello from dqe!")
 
 
 if __name__ == "__main__":

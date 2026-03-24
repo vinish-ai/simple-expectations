@@ -1,4 +1,4 @@
-from simple_expectations.core.suite import ExpectationSuite
+from dqe.core.suite import ExpectationSuite
 import tempfile
 import yaml
 import os

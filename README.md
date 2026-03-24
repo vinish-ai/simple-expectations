@@ -1,9 +1,9 @@
-# Simple-Expectations
+# Data Quality Engine
 
-**Simple-Expectations** is a modern, lightweight data validation library inspired by Great Expectations. 
+**Data Quality Engine** is a modern, lightweight data validation library inspired by Great Expectations. 
 It provides a completely stateless, embeddable, and high-performance validation engine powered by [Ibis](https://ibis-project.org/).
 
-Because all validation rules are compiled into deferred Ibis expressions, `simple-expectations` evaluates checks symmetrically across **20+ Execution Backends**, including:
+Because all validation rules are compiled into deferred Ibis expressions, `dqe` evaluates checks symmetrically across **20+ Execution Backends**, including:
 - DuckDB
 - Polars
 - Pandas
@@ -19,7 +19,7 @@ Because all validation rules are compiled into deferred Ibis expressions, `simpl
 
 ## Installation
 ```bash
-pip install simple-expectations
+pip install dqe
 ```
 
 *Note: Depending on your choice of execution environment, you'll need the corresponding client installed (e.g. `pip install duckdb pandas polars`).*
@@ -29,10 +29,10 @@ You can directly construct everything in pure Python objects. This makes embeddi
 
 ```python
 import pandas as pd
-import simple_expectations as se
+import dqe
 
 # Create a Context and register your data sources
-context = se.Context()
+context = dqe.Context()
 
 # Example: Feed it a pandas dataframe (automatically routed to rapid in-memory DuckDB!)
 df = pd.DataFrame({"id": [1, 2, 3], "age": [25, 30, None]})
@@ -45,11 +45,11 @@ context.add_data_source("my_db", backend="pandas", dictionary={"users": df})
 table = context.get_table("my_db", "users")
 
 # Build the Expectation Suite
-suite = se.ExpectationSuite(
+suite = dqe.ExpectationSuite(
     name="users_suite",
     expectations=[
-        se.BaseExpectation(type="expect_column_to_exist", kwargs={"column": "id"}),
-        se.BaseExpectation(
+        dqe.BaseExpectation(type="expect_column_to_exist", kwargs={"column": "id"}),
+        dqe.BaseExpectation(
             type="expect_column_values_to_be_between", 
             kwargs={"column": "age", "min_value": 0, "max_value": 100}
         )
@@ -93,10 +93,10 @@ expectations:
 
 **app.py**:
 ```python
-import simple_expectations as se
+import dqe
 
-context = se.Context()
-suite = se.ExpectationSuite.from_yaml("my_validations.yaml")
+context = dqe.Context()
+suite = dqe.ExpectationSuite.from_yaml("my_validations.yaml")
 
 # Automatically provision the duckdb "primary_warehouse" source defined in the YAML!
 context.add_data_source_from_suite(suite)
@@ -112,10 +112,10 @@ print(results.model_dump_json(indent=2))
 You can quickly generate boilerplate validation suites and run them directly from the command line:
 ```bash
 # Generate a starter my_validations.yaml and run_validations.py script
-simple-expectations init
+dqe init
 
 # Validate an existing suite YAML
-simple-expectations validate my_validations.yaml
+dqe validate my_validations.yaml
 ```
 
 ## Available Expectations
