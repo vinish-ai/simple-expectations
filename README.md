@@ -111,6 +111,9 @@ print(results.model_dump_json(indent=2))
 ## CLI Interface
 You can quickly generate boilerplate validation suites and run them directly from the command line:
 ```bash
+# Profile an existing table to automatically generate a baseline validation suite!
+dqe profile --backend duckdb --kwargs '{"database": "my_data.db"}' --table users --out baseline.yaml
+
 # Generate a starter my_validations.yaml and run_validations.py script
 dqe init
 

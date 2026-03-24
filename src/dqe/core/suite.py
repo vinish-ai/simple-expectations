@@ -22,6 +22,10 @@ class ExpectationSuite(BaseModel):
             data = yaml.safe_load(f)
         return cls(**data)
     
-    def to_yaml(self, filepath: str | Path) -> None:
-        with open(filepath, "w") as f:
-            yaml.dump(self.model_dump(), f, default_flow_style=False)
+    def to_yaml(self, filepath: Optional[str | Path] = None) -> Optional[str]:
+        data = yaml.dump(self.model_dump(exclude_none=True), default_flow_style=False)
+        if filepath:
+            with open(filepath, "w") as f:
+                f.write(data)
+        else:
+            return data
