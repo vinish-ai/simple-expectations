@@ -17,6 +17,23 @@ dev = [
     "polars",
     "pyspark"
 ]
+backends-embedded = [
+    "duckdb",
+    "polars",
+    "datafusion",
+]
+backends-docker = [
+    "psycopg2-binary",
+    "pymysql",
+    "clickhouse-connect",
+]
+backends-complex = [
+    "trino[sqlalchemy]",
+    "pyspark",
+]
+backends-all = [
+    "dqe[backends-embedded,backends-docker,backends-complex]",
+]
 airflow = ["apache-airflow"]
 dagster = ["dagster"]
 prefect = ["prefect"]
