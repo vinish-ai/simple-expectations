@@ -1,5 +1,5 @@
 import ibis
-from typing import List, Dict, Callable
+from typing import List, Dict, Callable, Optional
 
 from dqe.core.suite import ExpectationSuite
 from dqe.core.models import ExpectationSuiteValidationResult, ExpectationValidationResult
@@ -19,19 +19,33 @@ class Validator:
         self.table = table
         self.context = context
 
-    def validate(self, suite: ExpectationSuite) -> ExpectationSuiteValidationResult:
+    def validate(
+        self, 
+        suite: ExpectationSuite, 
+        result_format: str = "SUMMARY",
+        tags: Optional[List[str]] = None
+    ) -> ExpectationSuiteValidationResult:
         results: List[ExpectationValidationResult] = []
+        
+        # Pre-filter expectations by tags if specified
+        expectations = suite.expectations
+        if tags is not None:
+            tag_set = set(tags)
+            expectations = [e for e in expectations if tag_set.intersection(e.tags)]
         
         # Phase 1: Collect metrics from all expectations
         all_metrics = {}
         # Keep track of the resolution functions and kwargs for later mapping
         expectation_resolvers = []
+        # Store filter expressions for row-level diagnostics
+        filter_exprs = {}
         
-        for i, exp in enumerate(suite.expectations):
+        for i, exp in enumerate(expectations):
             if exp.type not in _EXPECTATION_REGISTRY:
                 results.append(ExpectationValidationResult(
                     expectation_type=exp.type,
                     success=False,
+                    severity=exp.severity,
                     kwargs=exp.kwargs,
                     exception_info={"error": f"Expectation type '{exp.type}' not registered."}
                 ))
@@ -43,6 +57,10 @@ class Validator:
                 kwargs = exp.kwargs.copy()
                 kwargs["context"] = self.context
                 metrics, resolve_fn = eval_fn(self.table, **kwargs)
+                
+                # Extract filter expression if present (for row-level diagnostics)
+                if "_filter" in metrics:
+                    filter_exprs[i] = metrics.pop("_filter")
                 
                 # Prefix metrics to prevent namespace collisions between expectations
                 prefixed_metrics = {
@@ -61,6 +79,7 @@ class Validator:
                 results.append(ExpectationValidationResult(
                     expectation_type=exp.type,
                     success=False,
+                    severity=exp.severity,
                     kwargs=exp.kwargs,
                     exception_info={"error": str(e)}
                 ))
@@ -117,6 +136,7 @@ class Validator:
                 results.append(ExpectationValidationResult(
                     expectation_type=exp.type,
                     success=False,
+                    severity=exp.severity,
                     kwargs=exp.kwargs,
                     exception_info={"error": f"Metric execution failed: {error_msg}"}
                 ))
@@ -124,28 +144,50 @@ class Validator:
             
             try:
                 success, kwargs, observed = resolve_fn(local_metrics)
+                
+                # Collect failing rows for row-level diagnostics
+                unexpected_rows = None
+                if result_format in ("BASIC", "COMPLETE") and not success and i in filter_exprs:
+                    try:
+                        limit = 20 if result_format == "BASIC" else None
+                        failing = self.table.filter(filter_exprs[i])
+                        if limit is not None:
+                            failing = failing.limit(limit)
+                        unexpected_rows = failing.execute().to_dict("records")
+                    except Exception:
+                        unexpected_rows = None
+                
                 results.append(ExpectationValidationResult(
                     expectation_type=exp.type,
                     success=success,
+                    severity=exp.severity,
                     kwargs=kwargs,
-                    observed_value=observed
+                    observed_value=observed,
+                    unexpected_rows=unexpected_rows
                 ))
             except Exception as e:
                 results.append(ExpectationValidationResult(
                     expectation_type=exp.type,
                     success=False,
+                    severity=exp.severity,
                     kwargs=exp.kwargs,
                     exception_info={"error": str(e)}
                 ))
 
-        success = all(r.success for r in results) if results else True
+        # Severity-aware success: only "error" severity failures cause suite failure
+        error_results = [r for r in results if r.severity == "error"]
+        warning_results = [r for r in results if r.severity == "warning"]
+        
+        success = all(r.success for r in error_results) if error_results else True
+        
         return ExpectationSuiteValidationResult(
             suite_name=suite.name,
             success=success,
             results=results,
             statistics={
-                "evaluated_expectations": len(suite.expectations),
+                "evaluated_expectations": len(expectations),
                 "successful_expectations": sum(1 for r in results if r.success),
-                "unsuccessful_expectations": sum(1 for r in results if not r.success)
+                "unsuccessful_expectations": sum(1 for r in results if not r.success),
+                "warning_expectations": len(warning_results)
             }
         )

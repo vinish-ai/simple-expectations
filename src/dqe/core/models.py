@@ -5,8 +5,10 @@ class ExpectationValidationResult(BaseModel):
     expectation_type: str
     success: bool
     kwargs: Dict[str, Any]
+    severity: str = "error"
     observed_value: Optional[Any] = None
     exception_info: Optional[Dict[str, Any]] = None
+    unexpected_rows: Optional[List[Dict[str, Any]]] = None
 
     model_config = ConfigDict(extra="allow")
 

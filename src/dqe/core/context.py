@@ -1,5 +1,5 @@
 import ibis
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from dqe.core.suite import ExpectationSuite
 from dqe.core.models import ExpectationSuiteValidationResult
@@ -33,7 +33,7 @@ class Context:
 
         # Ibis 9.0+ removed native pandas/polars backends. We transparently 
         # route these to an in-memory duckdb connection for better performance.
-        if backend in ("pandas"):
+        if backend in ("pandas",):
             con = ibis.duckdb.connect()
             if "dictionary" in kwargs:
                 for table_name, df_obj in kwargs["dictionary"].items():
@@ -55,7 +55,14 @@ class Context:
             raise ValueError(f"Data source '{data_source_name}' not found.")
         return self._data_sources[data_source_name].table(table_name)
 
-    def validate(self, table: Any, suite: ExpectationSuite) -> ExpectationSuiteValidationResult:
+    def validate(
+        self, 
+        table: Any, 
+        suite: ExpectationSuite, 
+        result_format: str = "SUMMARY",
+        tags: Optional[List[str]] = None
+    ) -> ExpectationSuiteValidationResult:
         """Validate a table against an ExpectationSuite."""
         validator = Validator(table=table, context=self)
-        return validator.validate(suite)
+        return validator.validate(suite, result_format=result_format, tags=tags)
+

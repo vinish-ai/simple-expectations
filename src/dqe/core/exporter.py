@@ -1,5 +1,6 @@
 import ssl
 import json
+import logging
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -7,6 +8,8 @@ import pandas as pd
 from typing import Any
 
 from dqe.core.models import ExpectationSuiteValidationResult
+
+logger = logging.getLogger(__name__)
 
 class BaseExporter:
     def export(self, result: ExpectationSuiteValidationResult) -> None:
@@ -39,9 +42,10 @@ class DatabaseExporter(BaseExporter):
 
 
 class WebhookExporter(BaseExporter):
-    def __init__(self, url: str, only_on_failure: bool = True):
+    def __init__(self, url: str, only_on_failure: bool = True, verify_ssl: bool = True):
         self.url = url
         self.only_on_failure = only_on_failure
+        self.verify_ssl = verify_ssl
 
     def export(self, result: ExpectationSuiteValidationResult) -> None:
         if self.only_on_failure and result.success:
@@ -55,12 +59,14 @@ class WebhookExporter(BaseExporter):
         req = urllib.request.Request(self.url, data=data, headers={'Content-Type': 'application/json'})
         
         ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
+        if not self.verify_ssl:
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
         
         try:
             urllib.request.urlopen(req, timeout=5, context=ctx)
-        except Exception:
-            # We catch arbitrary exceptions deliberately, as network failures on alerting 
-            # shouldn't crash the core context evaluation engine running critical backend transactions
-            pass
+        except Exception as e:
+            logger.warning(
+                "DQE WebhookExporter failed to deliver alert to %s: %s", 
+                self.url, str(e)
+            )

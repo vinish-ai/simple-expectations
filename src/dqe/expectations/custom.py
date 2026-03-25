@@ -28,7 +28,8 @@ def expect_custom_condition(
 
     metrics = {
         "valid_count": cond.ifelse(1, 0).sum(),
-        "total_count": table.count()
+        "total_count": table.count(),
+        "_filter": ~cond
     }
     
     def resolve(resolved_metrics: dict):

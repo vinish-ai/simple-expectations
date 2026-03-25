@@ -9,7 +9,8 @@ def expect_column_values_to_not_be_null(table: ibis.expr.types.Table, column: st
     # 1. Define deferred aggregate metrics
     metrics = {
         "non_null_count": (~col.isnull()).ifelse(1, 0).sum(),
-        "total_count": table.count()
+        "total_count": table.count(),
+        "_filter": col.isnull()
     }
     
     # 2. Define how to resolve those executed metrics back into success bool + observed values
@@ -46,7 +47,8 @@ def expect_column_values_to_be_between(table: ibis.expr.types.Table, column: str
     # that cannot be natively aggregated alongside other base table aggregates.
     metrics = {
         "valid_count": cond.ifelse(1, 0).sum(),
-        "non_null_count": (~col.isnull()).ifelse(1, 0).sum()
+        "non_null_count": (~col.isnull()).ifelse(1, 0).sum(),
+        "_filter": ~col.isnull() & ~cond
     }
     
     # 2. Define resolution callback
@@ -75,7 +77,8 @@ def expect_column_values_to_be_in_set(table: ibis.expr.types.Table, column: str,
     
     metrics = {
         "valid_count": cond.ifelse(1, 0).sum(),
-        "non_null_count": (~col.isnull()).ifelse(1, 0).sum()
+        "non_null_count": (~col.isnull()).ifelse(1, 0).sum(),
+        "_filter": ~col.isnull() & ~cond
     }
     
     def resolve(resolved_metrics: dict):
@@ -103,7 +106,8 @@ def expect_column_values_to_match_regex(table: ibis.expr.types.Table, column: st
     
     metrics = {
         "valid_count": cond.ifelse(1, 0).sum(),
-        "non_null_count": (~table[column].isnull()).ifelse(1, 0).sum() # Need to check raw column for nulls
+        "non_null_count": (~table[column].isnull()).ifelse(1, 0).sum(), # Need to check raw column for nulls
+        "_filter": ~table[column].isnull() & ~cond
     }
     
     def resolve(resolved_metrics: dict):
@@ -137,7 +141,8 @@ def expect_column_value_lengths_to_be_between(table: ibis.expr.types.Table, colu
         
     metrics = {
         "valid_count": cond.ifelse(1, 0).sum(),
-        "non_null_count": (~table[column].isnull()).ifelse(1, 0).sum()
+        "non_null_count": (~table[column].isnull()).ifelse(1, 0).sum(),
+        "_filter": ~table[column].isnull() & ~cond
     }
     
     def resolve(resolved_metrics: dict):
@@ -193,7 +198,8 @@ def expect_column_values_to_not_be_in_set(table: ibis.expr.types.Table, column: 
     
     metrics = {
         "valid_count": cond.ifelse(1, 0).sum(),
-        "non_null_count": (~col.isnull()).ifelse(1, 0).sum()
+        "non_null_count": (~col.isnull()).ifelse(1, 0).sum(),
+        "_filter": ~col.isnull() & ~cond
     }
     
     def resolve(resolved_metrics: dict):
@@ -220,7 +226,8 @@ def expect_column_values_to_be_null(table: ibis.expr.types.Table, column: str, m
     
     metrics = {
         "null_count": col.isnull().ifelse(1, 0).sum(),
-        "total_count": table.count()
+        "total_count": table.count(),
+        "_filter": ~col.isnull()
     }
     
     def resolve(resolved_metrics: dict):

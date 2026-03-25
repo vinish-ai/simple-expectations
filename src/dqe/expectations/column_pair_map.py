@@ -13,7 +13,8 @@ def expect_column_pair_values_a_to_be_greater_than_b(table: ibis.expr.types.Tabl
         
     metrics = {
         "valid_count": cond.ifelse(1, 0).sum(),
-        "non_null_count": (~(col_a.isnull() | col_b.isnull())).ifelse(1, 0).sum()
+        "non_null_count": (~(col_a.isnull() | col_b.isnull())).ifelse(1, 0).sum(),
+        "_filter": ~(col_a.isnull() | col_b.isnull()) & ~cond
     }
     
     def resolve(resolved_metrics: dict):
